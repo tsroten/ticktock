@@ -9,7 +9,7 @@ setup(
     author='Thomas Roten',
     author_email='thomas@roten.us',
     url='https://github.com/tsroten/ticktock',
-    description="adds least-recently-used cache management and automatic data"
+    description="adds least-recently-used cache management and automatic data "
                 "timeout to Python's Shelf class.",
     long_description=long_description,
     platforms='any',
