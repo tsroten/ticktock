@@ -17,8 +17,10 @@ import ticktock
 
 class TestDictMethods(unittest.TestCase):
 
-    shelves = [{'maxsize': 4, 'timeout': None}, {'maxsize': None, 'timeout':
-               1}, {'maxsize': 4, 'timeout': 1}]
+    shelves = [{'maxsize': 4, 'timeout': None},
+               {'maxsize': None, 'timeout': 1},
+               {'maxsize': 4, 'timeout': 1},
+               {'maxsize': None, 'timeout': 1, 'writeback': True}]
 
     def delete_cache_files(self):
         if os.path.exists('test_cache'):
@@ -30,20 +32,17 @@ class TestDictMethods(unittest.TestCase):
 
     def test_classes(self):
         for shelf in self.shelves:
-            obj = ticktock.open('test_cache', maxsize=shelf['maxsize'],
-                                timeout=shelf['timeout'])
+            obj = ticktock.open('test_cache', **shelf)
             self.basic_access_methods(obj)
             obj.clear()
             obj.close()
             self.delete_cache_files()
-            obj = ticktock.open('test_cache', maxsize=shelf['maxsize'],
-                                timeout=shelf['timeout'])
+            obj = ticktock.open('test_cache', **shelf)
             self.advanced_access_methods(obj)
             obj.clear()
             obj.close()
             self.delete_cache_files()
-            obj = ticktock.open('test_cache', maxsize=shelf['maxsize'],
-                                timeout=shelf['timeout'])
+            obj = ticktock.open('test_cache', **shelf)
             self.iter_view_methods(obj)
             obj.clear()
             obj.close()
@@ -69,6 +68,13 @@ class TestDictMethods(unittest.TestCase):
                 obj.clear()
                 obj.close()
                 self.delete_cache_files()
+            if shelf.get('writeback', False) is True:
+                obj = ticktock.open('test_cache', **shelf)
+                obj['foo'] = 'bar'
+                obj.sync()
+                self.assertEqual('bar', obj['foo'])
+                obj.clear()
+                obj.close()
 
     def basic_access_methods(self, obj):
         """Tests __setitem__, __getitem__, __delitem___, __contains__,
