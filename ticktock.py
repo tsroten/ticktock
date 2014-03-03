@@ -243,8 +243,14 @@ class _TimeoutMixin(object):
 
     def sync(self):
         """Sync the timeout index entry with the shelf."""
-        super(_TimeoutMixin, self).__setitem__(self._INDEX, self._index)
-        super(_TimeoutMixin, self).sync()
+        if self.writeback and self.cache:
+            super(_TimeoutMixin, self).__delitem__(self._INDEX)
+            super(_TimeoutMixin, self).sync()
+            self.writeback = False
+            super(_TimeoutMixin, self).__setitem__(self._INDEX, self._index)
+            self.writeback = True
+        if hasattr(self.dict, 'sync'):
+            self.dict.sync()
 
     def __del__(self):
         """Sync timeout index when object is deleted."""
