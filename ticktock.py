@@ -154,7 +154,14 @@ class _TimeoutMixin(object):
         """Check if a key is expired. If so, delete the key."""
         if not hasattr(self, '_index'):
             return False  # haven't initalized yet, so don't bother
-        timeout = self._index[key]
+        try:
+            timeout = self._index[key]
+        except KeyError:
+            if self.timeout:
+                self._index[key] = int(time() + self.timeout)
+            else:
+                self._index[key] = None
+            return False
         if timeout is None or timeout >= time():
             return False
         del self[key]  # key expired, so delete it from container
