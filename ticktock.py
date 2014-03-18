@@ -148,7 +148,7 @@ class _TimeoutMixin(object):
             super(_TimeoutMixin, self).__setitem__(self._INDEX, self._index)
         else:
             for key in self:
-                self._is_expired(key)
+                pass  # Force keys to expire using __iter__().
 
     def _is_expired(self, key):
         """Check if a key is expired. If so, delete the key."""
