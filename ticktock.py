@@ -148,13 +148,20 @@ class _TimeoutMixin(object):
             super(_TimeoutMixin, self).__setitem__(self._INDEX, self._index)
         else:
             for key in self:
-                self._is_expired(key)
+                pass  # Force keys to expire using __iter__().
 
     def _is_expired(self, key):
         """Check if a key is expired. If so, delete the key."""
         if not hasattr(self, '_index'):
             return False  # haven't initalized yet, so don't bother
-        timeout = self._index[key]
+        try:
+            timeout = self._index[key]
+        except KeyError:
+            if self.timeout:
+                self._index[key] = int(time() + self.timeout)
+            else:
+                self._index[key] = None
+            return False
         if timeout is None or timeout >= time():
             return False
         del self[key]  # key expired, so delete it from container
