@@ -1,6 +1,8 @@
 Tick Tock
 =========
 
+**Note: Tick Tock is no longer maintained**
+
 Tick Tock adds least-recently-used cache management and automatic data timeout
 to Python's
 `Shelf <http://docs.python.org/3.3/library/shelve.html#shelve.Shelf>`_ class.
